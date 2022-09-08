@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    </head>
+    <script type="text/javascript">
+
+        function showContacts(){
+            $.get('/get_phone_contact', function(data) {
+                 console.log(data);
+
+            let table = "<table border='2'><tr><th>ID</th><th>Name</th><th>Phone</th><th>Data</th><tr>";
+
+            for (i = 0; i < data.length; i++) {
+            table = table + "<tr><td>" + data[i].id + "</td><td>" +
+            data[i].number + "</td><td>" + data[i].name + "</td><td>" + data[i].time + "</td></tr>";
+            }
+
+            table = table + "</table>";
+
+            $("#test_phone_contact").html(table);
+           });
+        }
+
+        $(document).ready(function() {
+
+                 showContacts();
+        });
+
+        function send_contact() {
+               $.ajax({
+                        url: '/add_phone',
+                        dataType: 'json',
+                        type: 'POST',
+                        cache: false,
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            id: $("#phone_contact_id").val(),
+                            number: $("#phone_contact_number").val(),
+                            name: $("#phone_contact_name").val(),
+                            time: $("#phone_contact_time").val()
+                        }),
+                        success: function() {
+                            showContacts()
+                            }
+                })
+        }
+
+    </script>
+    <body>
+        <div id= "test_phone_contact">
+        </div>
+        <form>
+            <input type="text" id="phone_contact_id" placeholder="ID" /><br />
+            <input type="text" id="phone_contact_number" placeholder="Number" /><br />
+            <input type="text" id="phone_contact_name" placeholder="Name" /><br />
+            <input type="text" id="phone_contact_time" placeholder="Time" /><br />
+            <input type="button" onclick="send_contact()" value="Save" />
+        </form>
+    </body>
+
+</html>
